@@ -18,6 +18,14 @@ class TfLInterface
   end
 end
 
-tfl_interface = TfLInterface.new
+class CLI
+  def get_stop_id
+    puts "Please enter the stop id:"
+    gets
+  end
+end
 
-puts tfl_interface.get_arrivals("490008660N")
+cli = CLI.new
+tfl_interface = TfLInterface.new
+stop_id = cli.get_stop_id.chomp
+puts tfl_interface.get_arrivals(stop_id)
