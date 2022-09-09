@@ -21,11 +21,22 @@ end
 class CLI
   def get_stop_id
     puts "Please enter the stop id:"
-    gets
+    gets.chomp
   end
+
+  def print_next_5_arrivals(arrivals)
+    arrivals.sort_by! { |arrival| arrival["timeToStation"]}
+
+    next_5_arrivals = arrivals[0, 5]
+    next_5_arrivals.each { |arrival| arrival[:minsToStation] = (arrival["timeToStation"] / 60.to_f).ceil}
+    formatted_arrivals = next_5_arrivals.map { |arrival| "Line: #{arrival['lineName']}, Destination: #{arrival['destinationName']}, Mins To Arrival: #{arrival[:minsToStation]}"}
+    puts formatted_arrivals
+  end
+
 end
 
 cli = CLI.new
 tfl_interface = TfLInterface.new
-stop_id = cli.get_stop_id.chomp
-puts tfl_interface.get_arrivals(stop_id)
+stop_id = cli.get_stop_id
+arrivals = tfl_interface.get_arrivals(stop_id)
+cli.print_next_5_arrivals(arrivals)
