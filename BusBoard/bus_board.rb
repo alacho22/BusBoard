@@ -19,7 +19,7 @@ class TfLInterface
 
   def get_stop_ids(stop)
     ids = []
-    stop["children"].each { |child| ids << child["id"] }
+    stop["children"].each { |child| ids << child["naptanId"] }
     ids
   end
 
@@ -30,7 +30,7 @@ class TfLInterface
     res = Net::HTTP.get_response(uri)
     json_res = JSON.parse(res.body) if res.is_a?(Net::HTTPSuccess)
     stops = json_res["stopPoints"]
-    stops.sort_by { |stop| stop["distance"] }
+    stops.sort_by! { |stop| stop["distance"] }
     stops
   end
 
@@ -125,6 +125,8 @@ cli.print_next_5_arrivals(nearest_stop_arrivals)
 
 second_nearest_stop = nearest_stops[1]
 second_nearest_stop_arrivals = tfl_interface.get_all_arrivals(tfl_interface.get_stop_ids(second_nearest_stop))
+
+puts
 
 puts second_nearest_stop["commonName"]
 cli.print_next_5_arrivals(second_nearest_stop_arrivals)
